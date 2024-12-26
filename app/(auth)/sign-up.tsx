@@ -8,6 +8,7 @@ import CustomButton from "@/components/CustomButton";
 import InputField from "@/components/InputField";
 import OAuth from "@/components/OAuth";
 import { icons, images } from "@/constants";
+import { fetchAPI } from "@/lib/fetch";
 
 const SignUp = () => {
   const { isLoaded, signUp, setActive } = useSignUp();
@@ -50,7 +51,15 @@ const SignUp = () => {
         code: verification.code,
       });
       if (completeSignUp.status === "complete") {
-        // TODO:Create User
+        // TODO:Create User in DataBase
+        fetchAPI("/(api)/user", {
+          method: "POST",
+          body: JSON.stringify({
+            name: form.name,
+            email: form.email,
+            clerkId: completeSignUp.createdUserId,
+          }),
+        });
 
         await setActive({ session: completeSignUp.createdSessionId });
         setVerification({
@@ -78,9 +87,9 @@ const SignUp = () => {
     <ScrollView className="flex-1 bg-white">
       <View className="flex-1 bg-white">
         <View className="relative w-full h-[250px]">
-          <Image source={images.signUpCar} className="z-0 w-full h-[250px]" />
-          <Text className="text-2xl text-black font-JakartaSemiBold absolute bottom-5 left-5">
-            Create Your Account
+          <Image source={images.signUpCar} className="z-0 w-full h-[180px]" />
+          <Text className="text-2xl text-black text-center font-JakartaSemiBold pt-6">
+            Sign Up
           </Text>
         </View>
         <View className="p-5">
