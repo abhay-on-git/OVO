@@ -13,6 +13,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import RideCard from "@/components/RideCard";
 import { icons, images } from "@/constants";
+import Map from "@/components/Map";
+import GoogleTextInput from "@/components/GoogleTextInput";
 
 const Home = () => {
   const { user } = useUser();
@@ -176,12 +178,15 @@ const Home = () => {
                 <Image source={icons.out} className="w-4 h-4" />
               </TouchableOpacity>
             </View>
+            <GoogleTextInput />
 
             <>
               <Text className="text-xl font-JakartaBold mt-5 mb-3">
                 Your current location
               </Text>
             </>
+
+            <Map />
 
             <Text className="text-xl font-JakartaBold mt-5 mb-3">
               Recent Rides
