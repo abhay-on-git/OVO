@@ -1,6 +1,7 @@
 import { useUser } from "@clerk/clerk-expo";
 import { useAuth } from "@clerk/clerk-expo";
 import { router } from "expo-router";
+import * as Location from "expo-location";
 import {
   Text,
   View,
@@ -15,11 +16,43 @@ import RideCard from "@/components/RideCard";
 import { icons, images } from "@/constants";
 import Map from "@/components/Map";
 import GoogleTextInput from "@/components/GoogleTextInput";
+import { useEffect, useState } from "react";
+import { useLocationStore } from "@/store";
 
 const Home = () => {
   const { user } = useUser();
   const { signOut } = useAuth();
   const isLoading = false;
+  const [hasPermissions, setHasPermissions] = useState(false);
+  const { setUserLocation } = useLocationStore();
+
+  useEffect(() => {
+    if (hasPermissions) return;
+    const requestPermissions = async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+
+      if (status !== "granted") {
+        setHasPermissions(false);
+        return;
+      }
+
+      const location = await Location.getCurrentPositionAsync();
+      // console.log(location, "location");
+
+      const address = await Location.reverseGeocodeAsync({
+        latitude: location?.coords.latitude!,
+        longitude: location?.coords.longitude!,
+      });
+
+      // console.log(address)
+      setUserLocation({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+        address: `${address[0].name} , ${address[0].region}`,
+      });
+    };
+    requestPermissions();
+  }, [hasPermissions, setUserLocation]);
 
   const handleSignOut = () => {
     signOut();

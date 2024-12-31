@@ -35,16 +35,26 @@ export const calculateRegion = ({
   destinationLatitude?: number | null;
   destinationLongitude?: number | null;
 }) => {
+  // console.log("userLatitude:", userLatitude, typeof userLatitude);
+  // console.log("userLongitude:", userLongitude, typeof userLongitude);
   if (!userLatitude || !userLongitude) {
+    console.log(
+      "userLatitude : ",
+      userLatitude,
+      "userLongitude : ",
+      userLongitude,
+    );
+    console.log("hihihi");
     return {
-      latitude: 37.78825,
-      longitude: -122.4324,
+      latitude: 18.6285,
+      longitude: 73.8103,
       latitudeDelta: 0.01,
       longitudeDelta: 0.01,
     };
   }
 
   if (!destinationLatitude || !destinationLongitude) {
+    // console.log(userLongitude);
     return {
       latitude: userLatitude,
       longitude: userLongitude,
@@ -96,13 +106,13 @@ export const calculateDriverTimes = async ({
   try {
     const timesPromises = markers.map(async (marker) => {
       const responseToUser = await fetch(
-        `https://maps.googleapis.com/maps/api/directions/json?origin=${marker.latitude},${marker.longitude}&destination=${userLatitude},${userLongitude}&key=${directionsAPI}`,
+        `https://maps.googleapis.com/maps/api/directions/json?origin=${marker.latitude},${marker.longitude}&destination=${userLatitude},${userLongitude}&key=${directionsAPI}`
       );
       const dataToUser = await responseToUser.json();
       const timeToUser = dataToUser.routes[0].legs[0].duration.value; // Time in seconds
 
       const responseToDestination = await fetch(
-        `https://maps.googleapis.com/maps/api/directions/json?origin=${userLatitude},${userLongitude}&destination=${destinationLatitude},${destinationLongitude}&key=${directionsAPI}`,
+        `https://maps.googleapis.com/maps/api/directions/json?origin=${userLatitude},${userLongitude}&destination=${destinationLatitude},${destinationLongitude}&key=${directionsAPI}`
       );
       const dataToDestination = await responseToDestination.json();
       const timeToDestination =
