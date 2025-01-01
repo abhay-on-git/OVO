@@ -24,7 +24,7 @@ const Home = () => {
   const { signOut } = useAuth();
   const isLoading = false;
   const [hasPermissions, setHasPermissions] = useState(false);
-  const { setUserLocation } = useLocationStore();
+  const { setUserLocation, setDestinationLocation } = useLocationStore();
 
   useEffect(() => {
     if (hasPermissions) return;
@@ -57,6 +57,14 @@ const Home = () => {
   const handleSignOut = () => {
     signOut();
     router.replace("/(auth)/sign-in");
+  };
+  const handleDestinationPress = (location: {
+    latitude: number;
+    longitude: number;
+    address: string;
+  }) => {
+    setDestinationLocation(location);
+    router.push("/(root)/find-ride");
   };
 
   const recentRides = [
@@ -201,9 +209,13 @@ const Home = () => {
         ListHeaderComponent={
           <>
             <View className="flex flex-row items-center justify-between my-5">
-              <Text className="text-xl font-JakartaExtraBold">
-                Welcome {user?.firstName}👋
-              </Text>
+              <TouchableOpacity
+                onPress={() => router.push("/(root)/find-ride")}
+              >
+                <Text className="text-xl font-JakartaExtraBold">
+                  Welcome {user?.firstName}👋
+                </Text>
+              </TouchableOpacity>
               <TouchableOpacity
                 onPress={handleSignOut}
                 className="justify-center items-center w-10 h-10 rounded-full bg-white"
@@ -211,15 +223,21 @@ const Home = () => {
                 <Image source={icons.out} className="w-4 h-4" />
               </TouchableOpacity>
             </View>
-            <GoogleTextInput />
+            <GoogleTextInput
+              icon={icons.search}
+              containerStyle="bg-white shadow-md shadow-neutral-300"
+              handlePress={handleDestinationPress}
+            />
 
             <>
-              <Text className="text-xl font-JakartaBold mt-5 mb-3">
+              <Text className="text-xl font-JakartaBold mb-3">
                 Your current location
               </Text>
             </>
 
-            <Map />
+            <View className="w-full h-[350px] rounded-lg overflow-hidden">
+              <Map />
+            </View>
 
             <Text className="text-xl font-JakartaBold mt-5 mb-3">
               Recent Rides

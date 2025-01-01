@@ -54,13 +54,14 @@ const mockDrivers = [
 ];
 
 const Map = () => {
-  const [drivers, setDrivers] = useState(mockDrivers);
+  const { drivers, setDrivers } = useDriverStore();
   const { userLatitude, userLongitude } = useLocationStore();
   const [markers, setMarkers] = useState<MarkerData[]>([]);
   const { selectedDriver } = useDriverStore();
   const [region, setRegion] = useState<Region | null>(null);
 
   useEffect(() => {
+    setDrivers(mockDrivers);
     if (userLatitude != null && userLongitude != null) {
       // Recalculate the region when userLatitude or userLongitude changes
       const newRegion = calculateRegion({
@@ -87,7 +88,7 @@ const Map = () => {
   }
 
   return (
-    <View className="w-full h-[300px] rounded-lg overflow-hidden">
+    <View className="w-full h-screen rounded-lg items-center justify-center overflow-hidden">
       <MapView
         provider={PROVIDER_DEFAULT}
         className="w-full h-full"
